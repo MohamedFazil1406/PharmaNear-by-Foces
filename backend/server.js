@@ -41,11 +41,17 @@ mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("✅ Connected to MongoDB");
-    // Fetch drugs after successful connection
-    //fetchDrugs();
   })
   .catch((err) => {
     console.error("❌ Error connecting to MongoDB:", err.message);
+    if (err.message.includes("querySrv ECONNREFUSED") || err.message.includes("ENOTFOUND")) {
+      console.error("\n========================================================");
+      console.error("🚨 LOCAL DNS ERROR DETECTED 🚨");
+      console.error("Your local network or ISP is blocking the MongoDB Atlas connection.");
+      console.error("To fix this, change your computer's DNS server to 8.8.8.8 (Google)");
+      console.error("or set up a local MongoDB instance and change your MONGO_URL.");
+      console.error("========================================================\n");
+    }
     process.exit(1);
   });
 
